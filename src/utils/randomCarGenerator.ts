@@ -1,4 +1,5 @@
-import { CAR_BRANDS, CAR_MODELS, type Car } from "../constants";
+import type { Car } from "../api/types";
+import { CAR_BRANDS, CAR_MODELS } from "../constants";
 
 
 

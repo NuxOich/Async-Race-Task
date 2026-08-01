@@ -4,12 +4,14 @@ import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { createCar, createManyCars, deleteCar, selectAllCars, selectCarsTotalCount, updateCar } from '../../features/cars/carsSlice';
-import { MAX_CAR_NAME_LENGTH, RANDOM_CARS_COUNT, CARS_PER_PAGE, type Car } from '../../constants';
+import { selectAllCars, selectCarsTotalCount } from '../../features/cars/carsSlice';
+import { MAX_CAR_NAME_LENGTH, RANDOM_CARS_COUNT, CARS_PER_PAGE } from '../../constants';
 import { generateRandomCar } from '../../utils/randomCarGenerator';
 import { useSearchParams } from 'react-router-dom';
 import { carValidation } from '../../utils/validation';
 import { deleteWinner } from '../../features/winners/winnersSlice';
+import type { Car } from '../../api/types';
+import { createCarThunk, createManyCarsThunk, deleteCarThunk, updateCarThunk } from '../../features/cars/carsThunk';
 
 const Garage = () => {
   const [carName, setCarName] = useState<string>('');
@@ -48,7 +50,7 @@ const Garage = () => {
   };
 
   const handleDeleteCar = (carId: number) => {
-    dispatch(deleteCar(carId));
+    dispatch(deleteCarThunk(carId));
     dispatch(deleteWinner(carId));
   };
 
@@ -57,7 +59,7 @@ const Garage = () => {
 
   const carsGenerationHandler = () => {
     const generatedCars = Array.from({ length: RANDOM_CARS_COUNT }, generateRandomCar);
-    dispatch(createManyCars(generatedCars));
+    dispatch(createManyCarsThunk(generatedCars));
   }
 
   return (
@@ -68,7 +70,7 @@ const Garage = () => {
             <Input type='text' value={carName} onChange={(e) => setCarName(e.target.value)} placeholder='Car Name' />
             <Input type='color' value={carColor} onChange={(e) => setCarColor(e.target.value)} />
             <Button text='Create Car' disabled={!isNameValid} onClick={() => {
-              dispatch(createCar({
+              dispatch(createCarThunk({
                 name: carName,
                 color: carColor,
               }));
@@ -81,10 +83,12 @@ const Garage = () => {
             <Input type='color' value={editCarColor} onChange={(e) => setEditCarColor(e.target.value)} />
             <Button text='Edit Car' disabled={!isEditNameValid || editingCarId === null} onClick={() => {
               if (editingCarId !== null) {
-                dispatch(updateCar({
+                dispatch(updateCarThunk({
                   id: editingCarId,
-                  name: editCarName,
-                  color: editCarColor,
+                  car: {
+                    name: editCarName,
+                    color: editCarColor,
+                  }
                 }));
                 setEditingCarId(null);
               }

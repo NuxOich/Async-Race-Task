@@ -1,9 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { type Winner, MOCK_WINNERS } from "../../constants";
+import { MOCK_WINNERS } from "../../constants";
 import type { RootState } from "../../store/store";
+import type { WinnerWithCarInfo } from "../../api/types";
 
 interface WinnersState {
-  items: Winner[];
+  items: WinnerWithCarInfo[];
   totalCount: number;
   sortBy: 'wins' | 'time' | null;
   sortOrder: 'ASC' | 'DESC';

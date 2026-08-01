@@ -1,8 +1,5 @@
-export interface Car {
-  id: number;
-  name: string;
-  color: string;
-}
+import type { Car, WinnerWithCarInfo } from "./api/types";
+
 
 export const MOCK_CARS: Car[] = [
   { id: 1, name: 'Tesla Model S', color: '#e63946' },
@@ -11,15 +8,9 @@ export const MOCK_CARS: Car[] = [
 ];
 
 
-export interface Winner {
-  id: number;
-  name: string;
-  color: string;
-  wins: number;
-  time: number;
-}
 
-export const MOCK_WINNERS: Winner[] = [
+
+export const MOCK_WINNERS: WinnerWithCarInfo[] = [
   {
     id: 1,
     name: "Lightning McQ",
