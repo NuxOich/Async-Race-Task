@@ -1,33 +1,30 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { MOCK_WINNERS } from "../../constants";
 import type { RootState } from "../../store/store";
 import type { WinnerWithCarInfo } from "../../api/types";
+import { deleteWinnerThunk, fetchWinners } from "./winnersThunk";
 
 interface WinnersState {
   items: WinnerWithCarInfo[];
   totalCount: number;
   sortBy: 'wins' | 'time' | null;
   sortOrder: 'ASC' | 'DESC';
+  status: 'idle' | 'loading' | 'error';
+  error: string | null;
 };
 
 const initialState: WinnersState = {
-  items: MOCK_WINNERS,
-  totalCount: MOCK_WINNERS.length,
+  items: [],
+  totalCount: 0,
   sortBy: null,
   sortOrder: 'ASC',
+  status: 'idle',
+  error: null,
 };
 
 const winnersSlice = createSlice({
   name: 'winners',
   initialState,
   reducers: {
-    deleteWinner: (state, action: PayloadAction<number>) => {
-      const index = state.items.findIndex((winner) => winner.id === action.payload);
-      if (index !== -1) {
-        state.items.splice(index, 1);
-        state.totalCount -= 1;
-      }
-    },
     setSorting: (state, action: PayloadAction<'wins' | 'time'>) => {
       const field = action.payload;
       if (state.sortBy === field) {
@@ -38,20 +35,38 @@ const winnersSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchWinners.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(fetchWinners.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.items = action.payload.items;
+        state.totalCount = action.payload.totalCount;
+      })
+      .addCase(fetchWinners.rejected, (state, action) => {
+        state.status = 'error';
+        state.error = action.error.message ?? 'Unknown error';
+      })
+      .addCase(deleteWinnerThunk.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(deleteWinnerThunk.fulfilled, (state) => {
+        state.status = 'idle';
+      })
+      .addCase(deleteWinnerThunk.rejected, (state, action) => {
+        state.status = 'error';
+        state.error = action.error.message ?? 'Unknown error';
+      })
+
+  }
 });
 
 export const selectAllWinners = (state: RootState) => state.winners.items;
 export const selectWinnersTotalCount = (state: RootState) => state.winners.totalCount;
-export const selectSortedWinners = (state: RootState) => {
-  const { items, sortBy, sortOrder } = state.winners;
-  if (sortBy === null) return items;
 
-  const sorted = [...items].sort((a, b) => {
-    const diff = a[sortBy] - b[sortBy];
-    return sortOrder === 'ASC' ? diff : -diff;
-  });
-  return sorted;
-};
-
-export const { deleteWinner, setSorting } = winnersSlice.actions;
+export const { setSorting } = winnersSlice.actions;
 export default winnersSlice.reducer; 

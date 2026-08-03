@@ -3,9 +3,11 @@ import Button from '../../components/Button/Button';
 import CarIcon from '../../components/CarIcon/CarIcon';
 import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { selectSortedWinners, selectWinnersTotalCount, setSorting } from '../../features/winners/winnersSlice';
+import { selectAllWinners, selectWinnersTotalCount, setSorting } from '../../features/winners/winnersSlice';
 import { WINNERS_PER_PAGE } from '../../constants';
 import type { RootState } from '../../store/store';
+import { useEffect } from 'react';
+import { fetchWinners } from '../../features/winners/winnersThunk';
 
 
 
@@ -13,7 +15,7 @@ const Winners = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
 
-  const winners = useAppSelector(selectSortedWinners);
+  const winners = useAppSelector(selectAllWinners);
   const winnersCount = useAppSelector(selectWinnersTotalCount);
   const sortBy = useAppSelector((state: RootState) => state.winners.sortBy);
   const sortOrder = useAppSelector((state: RootState) => state.winners.sortOrder);
@@ -22,10 +24,14 @@ const Winners = () => {
   const totalPages = Math.ceil(winnersCount / WINNERS_PER_PAGE);
   const safePage = Math.max(1, Math.min(currentPage, totalPages || 1));
 
-  const startIndex = (safePage - 1) * WINNERS_PER_PAGE;
-  const endIndex = startIndex + WINNERS_PER_PAGE;
-
-  const currentWinners = winners.slice(startIndex, endIndex);
+  useEffect(() => {
+    dispatch(fetchWinners({
+      page: safePage,
+      limit: WINNERS_PER_PAGE,
+      sort: sortBy,
+      order: sortOrder,
+    }));
+  }, [safePage, dispatch])
 
   const handlePageChange = (pageNumber: number) => {
     setSearchParams((prev) => {
@@ -52,7 +58,7 @@ const Winners = () => {
           </tr>
         </thead>
         <tbody>
-          {currentWinners.map((winner) => (
+          {winners.map((winner) => (
             <tr key={winner.id}>
               <td>{winner.id}</td>
               <td><CarIcon color={winner.color} /></td>

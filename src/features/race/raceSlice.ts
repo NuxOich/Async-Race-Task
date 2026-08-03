@@ -1,0 +1,76 @@
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { RootState } from "../../store/store";
+
+export type EngineStatus = 'idle' | 'started' | 'driving' | 'finished' | 'broken';
+
+interface CarRaceState {
+  status: EngineStatus;
+  velocity: number;
+  distance: number;
+}
+
+interface RaceState {
+  carsRace: Record<number, CarRaceState>;
+  winnerId: number | null;
+  isRacing: boolean;
+}
+
+
+const initialState: RaceState = {
+  carsRace: {},
+  winnerId: null,
+  isRacing: false,
+};
+
+export const raceSlice = createSlice({
+  name: 'race',
+  initialState,
+  reducers: {
+    setCarStarted: (state, action: PayloadAction<{ id: number; velocity: number; distance: number }>) => {
+      const { id, velocity, distance } = action.payload;
+      state.carsRace[id] = {
+        status: 'started',
+        velocity,
+        distance,
+      };
+    },
+    setCarDriving: (state, action: PayloadAction<{ id: number }>) => {
+      const carRace = state.carsRace[action.payload.id];
+      if (carRace) {
+        carRace.status = 'driving';
+      }
+    },
+    setCarBroken: (state, action: PayloadAction<{ id: number }>) => {
+      const carRace = state.carsRace[action.payload.id];
+      if (carRace) {
+        carRace.status = 'broken';
+      }
+    },
+    setCarFinished: (state, action: PayloadAction<{ id: number }>) => {
+      const carRace = state.carsRace[action.payload.id];
+      if (!carRace) return;
+
+      carRace.status = 'finished';
+      if (state.winnerId === null) {
+        state.winnerId = action.payload.id;
+      }
+    },
+    resetCar: (state, action: PayloadAction<{ id: number }>) => {
+      delete state.carsRace[action.payload.id];
+    },
+    startRace: (state) => {
+      state.isRacing = true;
+    },
+    endRace: (state) => {
+      state.isRacing = false;
+    },
+
+  }
+});
+
+export const selectCarRaceState = (id: number) => (state: RootState) => state.race.carsRace[id];
+export const selectIsRacing = (state: RootState) => state.race.isRacing;
+export const selectWinnerId = (state: RootState) => state.race.winnerId;
+
+export const { setCarStarted, setCarDriving, setCarBroken, setCarFinished, resetCar, startRace, endRace } = raceSlice.actions;
+export default raceSlice.reducer;

@@ -1,13 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { MOCK_CARS } from "../../constants";
 import { type RootState } from "../../store/store";
 import type { Car } from "../../api/types";
 import { createCarThunk, createManyCarsThunk, deleteCarThunk, fetchCars, updateCarThunk } from "./carsThunk";
 
 
 const initialState: CarsState = {
-  items: MOCK_CARS,
-  totalCount: MOCK_CARS.length,
+  items: [],
+  totalCount: 0,
   status: 'idle',
   error: null,
 };
@@ -42,10 +41,8 @@ const carsSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(createCarThunk.fulfilled, (state, action) => {
+      .addCase(createCarThunk.fulfilled, (state) => {
         state.status = 'idle';
-        state.items.push(action.payload);
-        state.totalCount += 1;
       })
       .addCase(createCarThunk.rejected, (state, action) => {
         state.status = 'error';
@@ -70,13 +67,8 @@ const carsSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(deleteCarThunk.fulfilled, (state, action) => {
+      .addCase(deleteCarThunk.fulfilled, (state) => {
         state.status = 'idle';
-        const index = state.items.findIndex((car) => car.id === action.payload);
-        if (index !== -1) {
-          state.items.splice(index, 1);
-          state.totalCount -= 1;
-        }
       })
       .addCase(deleteCarThunk.rejected, (state, action) => {
         state.status = 'error';
@@ -86,10 +78,8 @@ const carsSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(createManyCarsThunk.fulfilled, (state, action) => {
+      .addCase(createManyCarsThunk.fulfilled, (state) => {
         state.status = 'idle';
-        state.items.push(...action.payload);
-        state.totalCount += action.payload.length;
       })
   }
 });
