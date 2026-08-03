@@ -2,7 +2,7 @@ import styles from './Garage.module.css';
 import CarCard from '../../components/CarCard/CarCard';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { selectAllCars, selectCarsTotalCount } from '../../features/cars/carsSlice';
 import { MAX_CAR_NAME_LENGTH, RANDOM_CARS_COUNT, CARS_PER_PAGE } from '../../constants';
@@ -13,6 +13,8 @@ import type { Car } from '../../api/types';
 import { createCarThunk, createManyCarsThunk, deleteCarThunk, fetchCars, updateCarThunk } from '../../features/cars/carsThunk';
 import type { RootState } from '../../store/store';
 import { deleteWinnerThunk } from '../../features/winners/winnersThunk';
+import { endRace, resetRace, startRace } from '../../features/race/raceSlice';
+import { recordWinnerThunk, startCarEngineThunk, stopCarEngineThunk } from '../../features/race/raceThunk';
 
 
 
@@ -29,14 +31,42 @@ const Garage = () => {
   const cars = useAppSelector(selectAllCars);
   const carsTotalCount = useAppSelector(selectCarsTotalCount);
   const status = useAppSelector((state: RootState) => state.cars.status);
+  const winnerId = useAppSelector((state: RootState) => state.race.winnerId);
+  const winnerRaceState = useAppSelector((state: RootState) => state.race.carsRace);
+  const isRacing = useAppSelector((state: RootState) => state.race.isRacing);
   const dispatch = useAppDispatch();
+  const recordedWinnerRef = useRef<number | null>(null);
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const totalPages = Math.ceil(carsTotalCount / CARS_PER_PAGE);
   const safePage = Math.max(1, Math.min(currentPage, totalPages || 1));
 
+
+
   useEffect(() => {
     dispatch(fetchCars({ page: safePage, limit: CARS_PER_PAGE }));
+  }, [safePage, dispatch]);
+
+  useEffect(() => {
+    if (winnerId === null) {
+      recordedWinnerRef.current = null;
+      return;
+    }
+    if (recordedWinnerRef.current === winnerId) return;
+
+    recordedWinnerRef.current = winnerId;
+
+    const { distance, velocity } = winnerRaceState[winnerId];
+    const time = Number(((distance / velocity) / 1000).toFixed(2));
+    dispatch(recordWinnerThunk({ id: winnerId, time }));
+  }, [winnerId, winnerRaceState, dispatch]);
+
+  useEffect(() => () => {
+    dispatch(resetRace());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(resetRace());
   }, [safePage, dispatch]);
 
   const handlePageChange = (pageNumber: number) => {
@@ -65,6 +95,16 @@ const Garage = () => {
     dispatch(createManyCarsThunk({ cars: generatedCars, page: safePage, limit: CARS_PER_PAGE }));
   }
 
+  const handleRace = async () => {
+    dispatch(startRace());
+    await Promise.all(cars.map((car) => dispatch(startCarEngineThunk(car.id))));
+  };
+
+  const handleReset = async () => {
+    dispatch(endRace());
+    await Promise.all(cars.map((car) => dispatch(stopCarEngineThunk(car.id))));
+  };
+
   return (
     <main className={styles.garageWrapper}>
       <div className={styles.container}>
@@ -72,7 +112,7 @@ const Garage = () => {
           <div className={styles.createCar}>
             <Input type='text' value={carName} onChange={(e) => setCarName(e.target.value)} placeholder='Car Name' />
             <Input type='color' value={carColor} onChange={(e) => setCarColor(e.target.value)} />
-            <Button text='Create Car' disabled={!isNameValid || status === 'loading'} onClick={() => {
+            <Button text='Create Car' disabled={!isNameValid || status === 'loading' || isRacing} onClick={() => {
               dispatch(createCarThunk({
                 car: {
                   name: carName,
@@ -88,7 +128,7 @@ const Garage = () => {
           <div className={styles.editCar}>
             <Input type='text' value={editCarName} onChange={(e) => setEditCarName(e.target.value)} placeholder='Car Name' />
             <Input type='color' value={editCarColor} onChange={(e) => setEditCarColor(e.target.value)} />
-            <Button text='Edit Car' disabled={!isEditNameValid || editingCarId === null || status === 'loading'} onClick={() => {
+            <Button text='Edit Car' disabled={!isEditNameValid || editingCarId === null || status === 'loading' || isRacing} onClick={() => {
               if (editingCarId !== null) {
                 dispatch(updateCarThunk({
                   id: editingCarId,
@@ -102,9 +142,9 @@ const Garage = () => {
             }} />
           </div>
           <div className={styles.btnsContainer}>
-            <Button text='Race' />
-            <Button text='Reset' />
-            <Button text='Generate Cars' onClick={carsGenerationHandler} />
+            <Button text='Race' disabled={isRacing} onClick={handleRace} />
+            <Button text='Reset' disabled={!isRacing} onClick={handleReset} />
+            <Button text='Generate Cars' disabled={isRacing} onClick={carsGenerationHandler} />
           </div>
         </div>
 
@@ -119,6 +159,7 @@ const Garage = () => {
 
           {status === 'idle' && (cars.map((car) => <CarCard
             key={car.id}
+            id={car.id}
             name={car.name}
             color={car.color}
             onEdit={() => handleEditCar(car)}
@@ -129,6 +170,8 @@ const Garage = () => {
           )}
 
         </div>
+
+        {winnerId && <p>Winner: {cars.find((car) => winnerId === car.id)?.name}!</p>}
 
         <div className={styles.pages}>
           <p>{`Page ${safePage}`}</p>

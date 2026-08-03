@@ -14,7 +14,7 @@ export const getWinners = async (page: number, limit: number, sort: Sort, order:
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error('Failed to fetch.')
+    throw new Error('Failed to fetch winners.')
   }
 
   const totalCount = response.headers.get('X-Total-Count');
@@ -25,12 +25,16 @@ export const getWinners = async (page: number, limit: number, sort: Sort, order:
   };
 };
 
-export const getWinner = async (id: number): Promise<Winner> => {
+export const getWinner = async (id: number): Promise<Winner | null> => {
   const url = `${API_BASE_URL}${API_ENDPOINTS.winners}/${id}`;
   const response = await fetch(url);
 
+  if (response.status === 404) {
+    return null;
+  }
+
   if (!response.ok) {
-    throw new Error('Failed to fetch.')
+    throw new Error('Failed to fetch winner.');
   }
 
   return (await response.json()) as Winner;
@@ -49,7 +53,7 @@ export const createWinner = async (winner: CreateWinner): Promise<Winner> => {
   if (response.status === 500) {
     throw new Error(' Insert failed, duplicate id')
   } else if (!response.ok) {
-    throw new Error('Failed to post.')
+    throw new Error('Failed to post winner.')
   }
 
   return (await response.json()) as Winner;
@@ -62,7 +66,7 @@ export const deleteWinner = async (id: number): Promise<void> => {
   });
 
   if (!response.ok && response.status !== 404) {
-    throw new Error('Failed to delete.')
+    throw new Error('Failed to delete winner.')
   }
 };
 
@@ -77,7 +81,7 @@ export const updateWinner = async (id: number, winner: UpdateWinner): Promise<Wi
   });
 
   if (!response.ok) {
-    throw new Error('Failed to update.')
+    throw new Error('Failed to update winner.')
   }
 
   return (await response.json()) as Winner;

@@ -13,6 +13,7 @@ interface RaceState {
   carsRace: Record<number, CarRaceState>;
   winnerId: number | null;
   isRacing: boolean;
+  sessionId: number;
 }
 
 
@@ -20,6 +21,7 @@ const initialState: RaceState = {
   carsRace: {},
   winnerId: null,
   isRacing: false,
+  sessionId: 0,
 };
 
 export const raceSlice = createSlice({
@@ -51,7 +53,7 @@ export const raceSlice = createSlice({
       if (!carRace) return;
 
       carRace.status = 'finished';
-      if (state.winnerId === null) {
+      if (state.isRacing && state.winnerId === null) {
         state.winnerId = action.payload.id;
       }
     },
@@ -60,9 +62,18 @@ export const raceSlice = createSlice({
     },
     startRace: (state) => {
       state.isRacing = true;
+      state.winnerId = null;
     },
     endRace: (state) => {
       state.isRacing = false;
+      state.winnerId = null;
+      state.sessionId += 1;
+    },
+    resetRace: (state) => {
+      state.carsRace = {};
+      state.winnerId = null;
+      state.isRacing = false;
+      state.sessionId += 1;
     },
 
   }
@@ -72,5 +83,5 @@ export const selectCarRaceState = (id: number) => (state: RootState) => state.ra
 export const selectIsRacing = (state: RootState) => state.race.isRacing;
 export const selectWinnerId = (state: RootState) => state.race.winnerId;
 
-export const { setCarStarted, setCarDriving, setCarBroken, setCarFinished, resetCar, startRace, endRace } = raceSlice.actions;
+export const { setCarStarted, setCarDriving, setCarBroken, setCarFinished, resetCar, startRace, endRace, resetRace } = raceSlice.actions;
 export default raceSlice.reducer;
