@@ -1,11 +1,7 @@
 import styles from './Winners.module.css';
 import { useSearchParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import {
-  selectAllWinners,
-  selectWinnersTotalCount,
-  setSorting,
-} from '../../features/winners/winnersSlice';
+import { selectAllWinners, selectWinnersTotalCount, setSorting } from '../../features/winners/winnersSlice';
 import { WINNERS_PER_PAGE } from '../../constants';
 import type { RootState } from '../../store/store';
 import { useEffect } from 'react';
@@ -31,10 +27,7 @@ const Winners = () => {
   useEffect(() => {
     dispatch(
       fetchWinners({
-        page: safePage,
-        limit: WINNERS_PER_PAGE,
-        sort: sortBy,
-        order: sortOrder,
+        page: safePage, limit: WINNERS_PER_PAGE, sort: sortBy, order: sortOrder,
       }),
     );
   }, [safePage, sortBy, sortOrder, dispatch]);
@@ -50,17 +43,10 @@ const Winners = () => {
     <main className={styles.winnersWrapper}>
       <h1 className={styles.heading}>Winners</h1>
 
-      <WinnersTable
-        winners={winners}
-        sortBy={sortBy}
-        sortOrder={sortOrder}
-        onSort={(field) => dispatch(setSorting(field))}
+      <WinnersTable winners={winners} sortBy={sortBy} sortOrder={sortOrder} onSort={(field) => dispatch(setSorting(field))}
       />
 
-      <Pagination
-        currentPage={safePage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
+      <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={handlePageChange}
       />
     </main>
   );

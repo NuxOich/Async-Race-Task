@@ -22,7 +22,9 @@ export const useEditCarForm = () => {
   };
 
   const handleEdit = () => {
-    if (editingCarId === null) return;
+    if (editingCarId === null) {
+      return;
+    }
     dispatch(updateCarThunk({
       id: editingCarId,
       car: { name: editCarName, color: editCarColor },

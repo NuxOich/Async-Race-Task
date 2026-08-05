@@ -1,11 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import type { RootState } from '../store/store';
-import {
-  recordWinnerThunk,
-  startCarEngineThunk,
-  stopCarEngineThunk,
-} from '../features/race/raceThunk';
+import { recordWinnerThunk, startCarEngineThunk, stopCarEngineThunk } from '../features/race/raceThunk';
 import { MS_TO_SECONDS, TIME_DECIMAL_PLACES } from '../constants';
 import { clearWinner, endRace, resetRace, startRace } from '../features/race/raceSlice';
 import type { Car } from '../api/types';
@@ -13,9 +9,7 @@ import type { Car } from '../api/types';
 export const useGarageRace = (cars: Car[], safePage: number) => {
   const winnerId = useAppSelector((state: RootState) => state.race.winnerId);
   const bannerWinnerId = useAppSelector((state: RootState) => state.race.bannerWinnerId);
-  const winnerRaceState = useAppSelector(
-    (state: RootState) => state.race.carsRace,
-  );
+  const winnerRaceState = useAppSelector((state: RootState) => state.race.carsRace,);
   const isRacing = useAppSelector((state: RootState) => state.race.isRacing);
   const dispatch = useAppDispatch();
 
@@ -33,9 +27,8 @@ export const useGarageRace = (cars: Car[], safePage: number) => {
     recordedWinnerRef.current = winnerId;
 
     const { distance, velocity } = winnerRaceState[winnerId];
-    const time = Number(
-      (distance / velocity / MS_TO_SECONDS).toFixed(TIME_DECIMAL_PLACES),
-    );
+    const time = Number((distance / velocity / MS_TO_SECONDS).toFixed(TIME_DECIMAL_PLACES));
+
     dispatch(recordWinnerThunk({ id: winnerId, time }));
   }, [winnerId, winnerRaceState, dispatch]);
 
@@ -60,9 +53,7 @@ export const useGarageRace = (cars: Car[], safePage: number) => {
     await Promise.all(cars.map((car) => dispatch(stopCarEngineThunk(car.id))));
   };
 
-  const clearWinnerBanner = () => {
-    dispatch(clearWinner());
-  };
+  const clearWinnerBanner = () => { dispatch(clearWinner()); };
 
   return { winnerId, isRacing, handleRace, handleReset, bannerWinnerId, clearWinnerBanner };
 };
