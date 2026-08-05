@@ -1,12 +1,15 @@
-import { API_BASE_URL, API_ENDPOINTS } from "./apiConfig";
-import type { Car, CarInput } from "./types";
+import { API_BASE_URL, API_ENDPOINTS } from './apiConfig';
+import type { Car, CarInput } from './types';
 
 interface GetCarsResponse {
   items: Car[];
   totalCount: number;
 }
 
-export const getCars = async (page: number, limit: number): Promise<GetCarsResponse> => {
+export const getCars = async (
+  page: number,
+  limit: number,
+): Promise<GetCarsResponse> => {
   const url = `${API_BASE_URL}${API_ENDPOINTS.garage}?_page=${page}&_limit=${limit}`;
   const response = await fetch(url);
   if (!response.ok) {
@@ -17,7 +20,7 @@ export const getCars = async (page: number, limit: number): Promise<GetCarsRespo
   return {
     items: data,
     totalCount: totalCount ? parseInt(totalCount, 10) : data.length,
-  }
+  };
 };
 
 export const getCar = async (id: number): Promise<Car> => {
@@ -39,7 +42,7 @@ export const createCar = async (car: CarInput): Promise<Car> => {
     body: JSON.stringify(car),
   });
   if (!response.ok) {
-    throw new Error('Failed to post.')
+    throw new Error('Failed to post.');
   }
   return (await response.json()) as Car;
 };
@@ -50,7 +53,7 @@ export const deleteCar = async (id: number): Promise<void> => {
     method: 'DELETE',
   });
   if (!response.ok) {
-    throw new Error('Failed to delete.')
+    throw new Error('Failed to delete.');
   }
 };
 
@@ -64,7 +67,7 @@ export const updateCar = async (id: number, car: CarInput): Promise<Car> => {
     body: JSON.stringify(car),
   });
   if (!response.ok) {
-    throw new Error('Failed to update.')
+    throw new Error('Failed to update.');
   }
   return (await response.json()) as Car;
 };

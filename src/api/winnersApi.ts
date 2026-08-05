@@ -1,5 +1,6 @@
-import { API_BASE_URL, API_ENDPOINTS } from "./apiConfig";
-import type { CreateWinner, UpdateWinner, Winner } from "./types";
+import { HTTP_STATUS } from '../constants';
+import { API_BASE_URL, API_ENDPOINTS } from './apiConfig';
+import type { CreateWinner, UpdateWinner, Winner } from './types';
 
 export type Sort = 'id' | 'wins' | 'time' | null;
 export type Order = 'ASC' | 'DESC';
@@ -9,12 +10,17 @@ interface GetWinnersResponse {
   totalCount: number;
 }
 
-export const getWinners = async (page: number, limit: number, sort: Sort, order: Order): Promise<GetWinnersResponse> => {
+export const getWinners = async (
+  page: number,
+  limit: number,
+  sort: Sort,
+  order: Order,
+): Promise<GetWinnersResponse> => {
   const url = `${API_BASE_URL}${API_ENDPOINTS.winners}?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`;
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error('Failed to fetch winners.')
+    throw new Error('Failed to fetch winners.');
   }
 
   const totalCount = response.headers.get('X-Total-Count');
@@ -29,7 +35,7 @@ export const getWinner = async (id: number): Promise<Winner | null> => {
   const url = `${API_BASE_URL}${API_ENDPOINTS.winners}/${id}`;
   const response = await fetch(url);
 
-  if (response.status === 404) {
+  if (response.status === HTTP_STATUS.NOT_FOUND) {
     return null;
   }
 
@@ -50,10 +56,10 @@ export const createWinner = async (winner: CreateWinner): Promise<Winner> => {
     body: JSON.stringify(winner),
   });
 
-  if (response.status === 500) {
-    throw new Error(' Insert failed, duplicate id')
+  if (response.status === HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+    throw new Error(' Insert failed, duplicate id');
   } else if (!response.ok) {
-    throw new Error('Failed to post winner.')
+    throw new Error('Failed to post winner.');
   }
 
   return (await response.json()) as Winner;
@@ -65,12 +71,15 @@ export const deleteWinner = async (id: number): Promise<void> => {
     method: 'DELETE',
   });
 
-  if (!response.ok && response.status !== 404) {
-    throw new Error('Failed to delete winner.')
+  if (!response.ok && response.status !== HTTP_STATUS.NOT_FOUND) {
+    throw new Error('Failed to delete winner.');
   }
 };
 
-export const updateWinner = async (id: number, winner: UpdateWinner): Promise<Winner> => {
+export const updateWinner = async (
+  id: number,
+  winner: UpdateWinner,
+): Promise<Winner> => {
   const url = `${API_BASE_URL}${API_ENDPOINTS.winners}/${id}`;
   const response = await fetch(url, {
     method: 'PUT',
@@ -81,7 +90,7 @@ export const updateWinner = async (id: number, winner: UpdateWinner): Promise<Wi
   });
 
   if (!response.ok) {
-    throw new Error('Failed to update winner.')
+    throw new Error('Failed to update winner.');
   }
 
   return (await response.json()) as Winner;

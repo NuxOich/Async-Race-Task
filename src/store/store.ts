@@ -1,7 +1,7 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit';
 import carsReducer from '../features/cars/carsSlice';
 import winnersReducer from '../features/winners/winnersSlice';
-import raceReducer from "../features/race/raceSlice";
+import raceReducer from '../features/race/raceSlice';
 
 export const store = configureStore({
   reducer: {

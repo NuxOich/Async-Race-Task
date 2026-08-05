@@ -1,7 +1,8 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../../store/store";
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { RootState } from '../../store/store';
 
-export type EngineStatus = 'idle' | 'started' | 'driving' | 'finished' | 'broken';
+export type EngineStatus =
+  'idle' | 'started' | 'driving' | 'finished' | 'broken';
 
 interface CarRaceState {
   status: EngineStatus;
@@ -16,7 +17,6 @@ interface RaceState {
   sessionId: number;
 }
 
-
 const initialState: RaceState = {
   carsRace: {},
   winnerId: null,
@@ -28,7 +28,10 @@ export const raceSlice = createSlice({
   name: 'race',
   initialState,
   reducers: {
-    setCarStarted: (state, action: PayloadAction<{ id: number; velocity: number; distance: number }>) => {
+    setCarStarted: (
+      state,
+      action: PayloadAction<{ id: number; velocity: number; distance: number }>,
+    ) => {
       const { id, velocity, distance } = action.payload;
       state.carsRace[id] = {
         status: 'started',
@@ -50,7 +53,9 @@ export const raceSlice = createSlice({
     },
     setCarFinished: (state, action: PayloadAction<{ id: number }>) => {
       const carRace = state.carsRace[action.payload.id];
-      if (!carRace) return;
+      if (!carRace) {
+        return;
+      }
 
       carRace.status = 'finished';
       if (state.isRacing && state.winnerId === null) {
@@ -75,13 +80,22 @@ export const raceSlice = createSlice({
       state.isRacing = false;
       state.sessionId += 1;
     },
-
-  }
+  },
 });
 
-export const selectCarRaceState = (id: number) => (state: RootState) => state.race.carsRace[id];
+export const selectCarRaceState = (id: number) => (state: RootState) =>
+  state.race.carsRace[id];
 export const selectIsRacing = (state: RootState) => state.race.isRacing;
 export const selectWinnerId = (state: RootState) => state.race.winnerId;
 
-export const { setCarStarted, setCarDriving, setCarBroken, setCarFinished, resetCar, startRace, endRace, resetRace } = raceSlice.actions;
+export const {
+  setCarStarted,
+  setCarDriving,
+  setCarBroken,
+  setCarFinished,
+  resetCar,
+  startRace,
+  endRace,
+  resetRace,
+} = raceSlice.actions;
 export default raceSlice.reducer;

@@ -1,7 +1,7 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../../store/store";
-import type { WinnerWithCarInfo } from "../../api/types";
-import { deleteWinnerThunk, fetchWinners } from "./winnersThunk";
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { RootState } from '../../store/store';
+import type { WinnerWithCarInfo } from '../../api/types';
+import { deleteWinnerThunk, fetchWinners } from './winnersThunk';
 
 interface WinnersState {
   items: WinnerWithCarInfo[];
@@ -10,7 +10,7 @@ interface WinnersState {
   sortOrder: 'ASC' | 'DESC';
   status: 'idle' | 'loading' | 'error';
   error: string | null;
-};
+}
 
 const initialState: WinnersState = {
   items: [],
@@ -60,13 +60,13 @@ const winnersSlice = createSlice({
       .addCase(deleteWinnerThunk.rejected, (state, action) => {
         state.status = 'error';
         state.error = action.error.message ?? 'Unknown error';
-      })
-
-  }
+      });
+  },
 });
 
 export const selectAllWinners = (state: RootState) => state.winners.items;
-export const selectWinnersTotalCount = (state: RootState) => state.winners.totalCount;
+export const selectWinnersTotalCount = (state: RootState) =>
+  state.winners.totalCount;
 
 export const { setSorting } = winnersSlice.actions;
-export default winnersSlice.reducer; 
+export default winnersSlice.reducer;
