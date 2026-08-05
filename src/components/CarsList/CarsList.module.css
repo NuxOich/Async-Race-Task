@@ -1,0 +1,20 @@
+.noCars {
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  text-align: center;
+}
+
+.error {
+  text-align: center;
+  font-size: var(--font-size-lg);
+  color: var(--color-danger);
+  font-family: var(--font-display);
+}
+
+.loading {
+  text-align: center;
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+}

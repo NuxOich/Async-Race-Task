@@ -16,7 +16,6 @@
   padding: 0 var(--space-4);
 }
 
-
 .garageSettings {
   display: flex;
   flex-direction: column;
@@ -40,12 +39,25 @@
   flex-direction: column;
 }
 
-.carCount {
-  align-self: center;
-  margin-bottom: 10px;
+.garageDescription {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+
 }
 
-.carCount p {
+.garageName {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+}
+
+.garageName p {
+  margin: 0;
+}
+
+.garageDescription>p {
   margin: 0;
   font-size: var(--font-size-xl);
   color: var(--color-text-primary);

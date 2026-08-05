@@ -27,7 +27,7 @@ const CarsList = ({ cars, status, onEdit, onRemove }: CarsListProps) => (
 
     {status === 'error' && <p className={styles.error}>Failed to load cars!</p>}
 
-    {status === 'idle' && cars.length === 0 && <p>No Cars</p>}
+    {status === 'idle' && cars.length === 0 && <p className={styles.noCars}>No Cars</p>}
   </div>
 );
 

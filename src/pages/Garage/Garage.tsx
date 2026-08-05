@@ -144,7 +144,10 @@ const Garage = () => {
           </div>
         </div>
 
-        <div className={styles.carCount}>
+        <div className={styles.garageDescription}>
+          <div className={styles.garageName}>
+            <p>GARAGE</p>
+          </div>
           <p>{`Cars: ${carsTotalCount}`}</p>
         </div>
 
