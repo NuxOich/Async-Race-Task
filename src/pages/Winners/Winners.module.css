@@ -1,0 +1,6 @@
+.winnersWrapper {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2) var(--space-4);
+  gap: 15px;
+}

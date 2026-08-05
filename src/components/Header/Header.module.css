@@ -1,0 +1,42 @@
+.headerWrapper {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-accent-purple);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  justify-self: start;
+  height: 40px;
+  width: auto;
+}
+
+.logo img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
+
+.pages {
+  justify-self: center;
+  display: flex;
+  gap: var(--space-3);
+}
+
+.navLink {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  text-decoration: none;
+  font-family: var(--font-display);
+}
+
+.navLinkActive {
+  composes: navLink;
+  color: var(--color-accent-cyan);
+}

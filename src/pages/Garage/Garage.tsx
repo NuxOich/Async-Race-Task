@@ -3,6 +3,7 @@ import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 import {
   selectAllCars,
   selectCarsTotalCount,
@@ -47,7 +48,7 @@ const Garage = () => {
     isNameValid,
     handleCreate,
   } = useCreateCarForm(safePage, CARS_PER_PAGE);
-  const { winnerId, isRacing, handleRace, handleReset } = useGarageRace(
+  const { isRacing, handleRace, handleReset, bannerWinnerId, clearWinnerBanner } = useGarageRace(
     cars,
     safePage,
   );
@@ -133,7 +134,7 @@ const Garage = () => {
             />
           </div>
           <div className={styles.btnsContainer}>
-            <Button text="Race" disabled={isRacing} onClick={handleRace} />
+            <Button variant='primary' text="Race" disabled={isRacing} onClick={handleRace} />
             <Button text="Reset" disabled={!isRacing} onClick={handleReset} />
             <Button
               text="Generate Cars"
@@ -154,8 +155,14 @@ const Garage = () => {
           onRemove={handleDeleteCar}
         />
 
-        {winnerId && (
-          <p>Winner: {cars.find((car) => winnerId === car.id)?.name}!</p>
+        {bannerWinnerId && (
+          <div className={styles.winnerOverlay}>
+            <div className={styles.winnerModal}>
+              <Button icon={faClose} onClick={clearWinnerBanner} variant='close' />
+              <h2>WINNER</h2>
+              <p>{cars.find((car) => bannerWinnerId === car.id)?.name}</p>
+            </div>
+          </div>
         )}
 
         <Pagination

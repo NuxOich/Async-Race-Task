@@ -1,0 +1,81 @@
+@keyframes winnerAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.garageWrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+
+.garageSettings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-panel);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+.createCar,
+.editCar,
+.btnsContainer {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.carCount {
+  align-self: center;
+  margin-bottom: 10px;
+}
+
+.carCount p {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+}
+
+.winnerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 18, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.winnerModal {
+  position: relative;
+  background: var(--color-bg-panel);
+  border: 2px solid var(--color-accent-pink);
+  box-shadow: var(--glow-pink);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  text-align: center;
+  animation: winnerAppear 0.3s ease;
+}
+
+.winnerModal h2 {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  color: var(--color-accent-pink);
+  margin: 0 0 var(--space-2);
+}

@@ -1,4 +1,5 @@
 import styles from './Header.module.css';
+import asyncRaceImg from '../../assets/images/AsyncRaceImage.png';
 import { NavLink } from 'react-router-dom';
 
 const getNavLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -7,9 +8,9 @@ const getNavLinkClass = ({ isActive }: { isActive: boolean }) =>
 const Header = () => (
   <header className={styles.headerWrapper}>
     <div className={styles.logo}>
-      <img src="#" alt="Logo" />
+      <img src={asyncRaceImg} alt="Logo" />
     </div>
-    <div>
+    <div className={styles.pages}>
       <NavLink to="/" className={getNavLinkClass}>
         Garage
       </NavLink>

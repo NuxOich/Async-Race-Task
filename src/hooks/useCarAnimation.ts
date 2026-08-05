@@ -16,10 +16,13 @@ export const useCarAnimation = (id: number) => {
 
     if (raceState?.status === 'started') {
       const trackWidth = carElement.parentElement?.clientWidth ?? 0;
+      const carWidth = carElement.clientWidth;
+      const distance = trackWidth - carWidth;
+
       animationRef.current = carElement.animate(
         [
           { transform: 'translateX(0)' },
-          { transform: `translateX(${trackWidth}px)` },
+          { transform: `translateX(${distance}px)` },
         ],
         {
           duration: raceState.distance / raceState.velocity,
@@ -28,7 +31,7 @@ export const useCarAnimation = (id: number) => {
       );
       animationRef.current.finished
         .then(() => dispatch(setCarFinished({ id })))
-        .catch(() => {});
+        .catch(() => { });
     }
 
     if (raceState?.status === 'broken') {

@@ -1,10 +1,8 @@
 import styles from './CarCard.module.css';
+import { faPlay, faPause } from '@fortawesome/free-solid-svg-icons';
 import Button from '../Button/Button';
 import CarIcon from '../CarIcon/CarIcon';
-import {
-  startCarEngineThunk,
-  stopCarEngineThunk,
-} from '../../features/race/raceThunk';
+import { startCarEngineThunk, stopCarEngineThunk } from '../../features/race/raceThunk';
 import { useCarAnimation } from '../../hooks/useCarAnimation';
 import { useAppDispatch } from '../../store/hooks';
 
@@ -23,29 +21,25 @@ const CarCard = ({ id, name, color, onEdit, onRemove }: CarCardProps) => {
 
   return (
     <div className={styles.carCardWrapper}>
-      <div className={styles.carBackground}>
-        <div className={styles.carSetting}>
+      <div className={styles.controls}>
+        <div className={styles.controlsRow}>
           <Button text="Edit" disabled={!isIdle} onClick={onEdit} />
-          <Button text="Remove" disabled={!isIdle} onClick={onRemove} />
-          <Button
-            text="Start"
-            disabled={!isIdle}
-            onClick={() => dispatch(startCarEngineThunk(id))}
-          />
-          <Button
-            text="Stop"
-            disabled={isIdle}
-            onClick={() => dispatch(stopCarEngineThunk(id))}
-          />
+          <Button variant='danger' text="Remove" disabled={!isIdle} onClick={onRemove} />
         </div>
-        <p className={styles.carName}>{name}</p>
+        <div className={styles.controlsRow}>
+          <Button variant='primary' size='compact' icon={faPlay} disabled={!isIdle} onClick={() => dispatch(startCarEngineThunk(id))} />
+          <Button size='compact' icon={faPause} disabled={isIdle} onClick={() => dispatch(stopCarEngineThunk(id))} />
+        </div>
       </div>
 
-      <div className={styles.carRaceTrack}>
-        <div ref={carElementRef} className={styles.car}>
-          <CarIcon color={color} />
+      <div className={styles.trackArea}>
+        <p className={styles.carName}>{name}</p>
+        <div className={styles.carRaceTrack}>
+          <div ref={carElementRef} className={styles.car}>
+            <CarIcon color={color} />
+          </div>
+          <div className={styles.track}></div>
         </div>
-        <div className={styles.track}></div>
       </div>
     </div>
   );

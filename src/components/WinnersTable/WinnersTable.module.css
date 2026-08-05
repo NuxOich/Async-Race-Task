@@ -1,0 +1,30 @@
+.winnersTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-bg-panel);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.winnersTable th {
+  font-family: var(--font-display);
+  color: var(--color-accent-purple);
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--color-accent-purple);
+}
+
+.winnersTable th:hover {
+  color: var(--color-accent-cyan);
+}
+
+.winnersTable td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.winnersTable tr:last-child td {
+  border-bottom: none;
+}

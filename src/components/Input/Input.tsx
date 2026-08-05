@@ -9,7 +9,7 @@ interface InputProps {
 
 const Input = ({ type, placeholder, value, onChange }: InputProps) => (
   <input
-    className={styles.text}
+    className={styles.input}
     type={type}
     placeholder={placeholder}
     value={value}

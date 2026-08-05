@@ -7,11 +7,12 @@ import {
   stopCarEngineThunk,
 } from '../features/race/raceThunk';
 import { MS_TO_SECONDS, TIME_DECIMAL_PLACES } from '../constants';
-import { endRace, resetRace, startRace } from '../features/race/raceSlice';
+import { clearWinner, endRace, resetRace, startRace } from '../features/race/raceSlice';
 import type { Car } from '../api/types';
 
 export const useGarageRace = (cars: Car[], safePage: number) => {
   const winnerId = useAppSelector((state: RootState) => state.race.winnerId);
+  const bannerWinnerId = useAppSelector((state: RootState) => state.race.bannerWinnerId);
   const winnerRaceState = useAppSelector(
     (state: RootState) => state.race.carsRace,
   );
@@ -59,5 +60,9 @@ export const useGarageRace = (cars: Car[], safePage: number) => {
     await Promise.all(cars.map((car) => dispatch(stopCarEngineThunk(car.id))));
   };
 
-  return { winnerId, isRacing, handleRace, handleReset };
+  const clearWinnerBanner = () => {
+    dispatch(clearWinner());
+  };
+
+  return { winnerId, isRacing, handleRace, handleReset, bannerWinnerId, clearWinnerBanner };
 };

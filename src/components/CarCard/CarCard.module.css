@@ -1,10 +1,19 @@
 .carCardWrapper {
-  width: 100%;
-  max-width: 1200px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--color-bg-panel);
+  border-radius: var(--radius-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 8px;
 }
 
 .carRaceTrack {
   position: relative;
+  background-color: var(--color-bg-elevated);
+  border-radius: var(--radius-sm);
   width: 100%;
   height: 60px;
   display: flex;
@@ -20,8 +29,39 @@
   background: #ccc;
 }
 
+.track::after {
+  content: '';
+  position: absolute;
+  right: 50px;
+  top: -37px;
+  width: 3px;
+  height: 60px;
+  background-color: var(--color-accent-yellow);
+  box-shadow: 0 0 8px var(--color-accent-yellow), 0 0 16px var(--color-accent-yellow);
+}
+
 .car {
   position: relative;
   width: 50px;
   z-index: 1;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.controlsRow {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.trackArea {
+  min-width: 0;
+}
+
+.carName {
+  margin-bottom: var(--space-2);
 }

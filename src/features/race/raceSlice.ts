@@ -13,6 +13,7 @@ interface CarRaceState {
 interface RaceState {
   carsRace: Record<number, CarRaceState>;
   winnerId: number | null;
+  bannerWinnerId: number | null;
   isRacing: boolean;
   sessionId: number;
 }
@@ -20,6 +21,7 @@ interface RaceState {
 const initialState: RaceState = {
   carsRace: {},
   winnerId: null,
+  bannerWinnerId: null,
   isRacing: false,
   sessionId: 0,
 };
@@ -60,6 +62,7 @@ export const raceSlice = createSlice({
       carRace.status = 'finished';
       if (state.isRacing && state.winnerId === null) {
         state.winnerId = action.payload.id;
+        state.bannerWinnerId = action.payload.id;
       }
     },
     resetCar: (state, action: PayloadAction<{ id: number }>) => {
@@ -68,10 +71,12 @@ export const raceSlice = createSlice({
     startRace: (state) => {
       state.isRacing = true;
       state.winnerId = null;
+      state.bannerWinnerId = null;
     },
     endRace: (state) => {
       state.isRacing = false;
       state.winnerId = null;
+      state.bannerWinnerId = null;
       state.sessionId += 1;
     },
     resetRace: (state) => {
@@ -80,6 +85,9 @@ export const raceSlice = createSlice({
       state.isRacing = false;
       state.sessionId += 1;
     },
+    clearWinner: (state) => {
+      state.bannerWinnerId = null;
+    }
   },
 });
 
@@ -97,5 +105,6 @@ export const {
   startRace,
   endRace,
   resetRace,
+  clearWinner,
 } = raceSlice.actions;
 export default raceSlice.reducer;
